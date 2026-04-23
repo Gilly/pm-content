@@ -46,7 +46,7 @@
     height: var(--header-h);
     background: var(--ink);
     display: flex; align-items: center;
-    padding: 0 16px;
+    padding: 0 20px;
     gap: 12px;
   }
   .logo {
@@ -59,25 +59,23 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex: 1;
     min-width: 0;
   }
   .logo span { color: #A8A49C; font-weight: 400; }
   @media (max-width: 480px) { .logo span { display: none; } }
   .hamburger {
     display: none;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    border-radius: 6px;
+    background: none;
+    border: none;
     cursor: pointer;
-    padding: 8px 10px;
+    padding: 6px;
     flex-direction: column;
     gap: 5px;
     flex-shrink: 0;
     -webkit-tap-highlight-color: transparent;
   }
   .hamburger span {
-    display: block; width: 20px; height: 2px;
+    display: block; width: 22px; height: 2px;
     background: #fff; border-radius: 2px; transition: all 0.2s;
   }
   @media (max-width: 768px) { .hamburger { display: flex; } }
@@ -357,10 +355,10 @@
 <body>
 
 <header>
-  <div class="logo">PM Skills Labs <span>/ AI-Augmented Product Practice</span></div>
   <button class="hamburger" onclick="toggleNav()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
+  <div class="logo">PM Skills Labs <span>/ AI-Augmented Product Practice</span></div>
 </header>
 
 <div class="shell">
