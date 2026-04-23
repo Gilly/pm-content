@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PM Skills Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --ink: #1A1916;
+    --ink-2: #5C5A54;
+    --ink-3: #9C9A93;
+    --accent: #1A1916;
+    --accent-subtle: #EDEAE3;
+    --tag-inperson: #E8F4EC;
+    --tag-inperson-ink: #1A6B35;
+    --tag-zoom: #E8EEF8;
+    --tag-zoom-ink: #1A3A7A;
+    --tag-async: #FDF2E4;
+    --tag-async-ink: #8A4E00;
+    --border: #E5E2DA;
+    --code-bg: #F0EDE6;
+    --nav-w: 260px;
+    --header-h: 56px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--header-h);
+    background: var(--ink);
+    display: flex; align-items: center;
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: #fff;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .logo span { color: #A8A49C; font-weight: 400; }
+  .hamburger {
+    display: none; background: none; border: none; cursor: pointer;
+    padding: 4px; margin-left: auto;
+    flex-direction: column; gap: 5px;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 1.5px;
+    background: #fff; transition: all 0.2s;
+  }
+  @media (max-width: 768px) { .hamburger { display: flex; } }
+
+  /* ── LAYOUT ── */
+  .shell {
+    display: flex;
+    padding-top: var(--header-h);
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  nav {
+    width: var(--nav-w);
+    flex-shrink: 0;
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0 48px;
+    transition: transform 0.25s ease;
+    z-index: 90;
+  }
+  nav.hidden { transform: translateX(-100%); }
+  .nav-section { margin-bottom: 4px; }
+  .nav-section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding: 16px 20px 6px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 20px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+    line-height: 1.4;
+  }
+  .nav-item:hover { color: var(--ink); background: var(--accent-subtle); }
+  .nav-item.active { color: var(--ink); border-left-color: var(--ink); background: var(--accent-subtle); font-weight: 500; }
+  .nav-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+    padding: 1px 6px; border-radius: 3px; white-space: nowrap; flex-shrink: 0;
+  }
+  .tag-ip { background: var(--tag-inperson); color: var(--tag-inperson-ink); }
+  .tag-zm { background: var(--tag-zoom); color: var(--tag-zoom-ink); }
+  .tag-as { background: var(--tag-async); color: var(--tag-async-ink); }
+
+  @media (max-width: 768px) {
+    nav { transform: translateX(-100%); }
+    nav.open { transform: translateX(0); }
+  }
+
+  /* ── MAIN ── */
+  main {
+    margin-left: var(--nav-w);
+    flex: 1;
+    min-width: 0;
+  }
+  @media (max-width: 768px) { main { margin-left: 0; } }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .page-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 40px 96px;
+  }
+  @media (max-width: 600px) { .page-inner { padding: 32px 20px 80px; } }
+
+  /* ── TYPOGRAPHY ── */
+  .page-inner h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 700;
+    line-height: 1.2; margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .page-inner .subtitle {
+    font-size: 17px; color: var(--ink-2);
+    margin-bottom: 36px; font-weight: 300;
+  }
+  .page-inner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 600;
+    margin-top: 44px; margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .page-inner h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 600;
+    margin-top: 32px; margin-bottom: 8px;
+    color: var(--ink);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .page-inner p { margin-bottom: 14px; color: var(--ink); }
+  .page-inner ul, .page-inner ol {
+    margin: 0 0 14px 20px;
+  }
+  .page-inner li { margin-bottom: 5px; }
+  .page-inner strong { font-weight: 500; }
+  .page-inner em { font-style: italic; color: var(--ink-2); }
+  .page-inner hr {
+    border: none; border-top: 1px solid var(--border);
+    margin: 36px 0;
+  }
+  .page-inner blockquote {
+    border-left: 3px solid var(--ink);
+    padding: 12px 20px;
+    margin: 20px 0;
+    background: var(--accent-subtle);
+    border-radius: 0 6px 6px 0;
+  }
+  .page-inner blockquote p { margin: 0; font-style: italic; color: var(--ink-2); }
+  .page-inner a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .page-inner a:hover { opacity: 0.6; }
+
+  /* ── CODE ── */
+  .page-inner pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    margin: 16px 0 20px;
+    position: relative;
+  }
+  .page-inner code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #3D3A32;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .page-inner p code, .page-inner li code {
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    color: #3D3A32;
+  }
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 4px; padding: 3px 10px;
+    font-size: 11px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink-2); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .copy-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* ── TABLES ── */
+  .page-inner table {
+    width: 100%; border-collapse: collapse;
+    margin: 16px 0 20px; font-size: 13.5px;
+  }
+  .page-inner th {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--ink-3);
+    padding: 8px 12px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-inner td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .page-inner tr:last-child td { border-bottom: none; }
+  .page-inner tr:hover td { background: var(--accent-subtle); }
+
+  /* ── SESSION CARDS (OS home) ── */
+  .session-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .session-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: flex-start; gap: 14px;
+  }
+  .session-card:hover { border-color: var(--ink); transform: translateY(-1px); }
+  .session-card-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+  .session-card-body { flex: 1; }
+  .session-card-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600; font-size: 14px;
+    margin-bottom: 3px;
+  }
+  .session-card-meta {
+    font-size: 12px; color: var(--ink-3);
+    margin-bottom: 6px;
+  }
+  .session-card-skills { font-size: 12.5px; color: var(--ink-2); }
+
+  /* ── SKILL CARDS ── */
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .skill-card h3 { margin-top: 0; }
+  .skill-card .why {
+    font-size: 14px; color: var(--ink-2);
+    margin-bottom: 12px; line-height: 1.6;
+  }
+  .skill-card .outcome {
+    font-size: 13px; color: var(--ink-2);
+    font-style: italic; margin-top: 8px;
+  }
+  .skill-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 10px;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--ink); text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 5px 12px; border-radius: 4px;
+    transition: all 0.15s; cursor: pointer;
+  }
+  .skill-link:hover { background: var(--ink); color: #fff; border-color: var(--ink); text-decoration: none; }
+
+  /* ── FLOW BANNER ── */
+  .flow-banner {
+    background: var(--ink);
+    color: #fff;
+    border-radius: 10px;
+    padding: 18px 24px;
+    margin: 28px 0;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    display: flex; align-items: center;
+    gap: 8px; flex-wrap: wrap;
+  }
+  .flow-banner .step { color: #fff; font-weight: 600; }
+  .flow-banner .arrow { color: #6B6860; }
+
+  /* ── FORMAT BADGES ── */
+  .format-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11.5px; font-weight: 500;
+    padding: 3px 10px; border-radius: 4px;
+    margin-bottom: 16px;
+  }
+
+  /* ── SCROLLBAR ── */
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-track { background: transparent; }
+  nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PM Skills Labs <span>/ AI-Augmented Product Practice</span></div>
+  <button class="hamburger" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="shell">
+<nav id="sidebar">
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('os')">Product Management OS</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">In-Person Sessions</div>
+    <div class="nav-item" onclick="showPage('s1')">Session 1 — Foundation <span class="nav-tag tag-ip">2hr</span></div>
+    <div class="nav-item" onclick="showPage('s2')">Session 2 — Landscape <span class="nav-tag tag-ip">60m</span></div>
+    <div class="nav-item" onclick="showPage('s3')">Session 3 — Customers <span class="nav-tag tag-ip">60m</span></div>
+    <div class="nav-item" onclick="showPage('s4')">Session 4 — Alignment <span class="nav-tag tag-ip">60m</span></div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Zoom Sessions</div>
+    <div class="nav-item" onclick="showPage('za')">Zoom A — Communicate <span class="nav-tag tag-zm">30m</span></div>
+    <div class="nav-item" onclick="showPage('zb')">Zoom B — Risk & Success <span class="nav-tag tag-zm">30m</span></div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Self-Paced Reference</div>
+    <div class="nav-item" onclick="showPage('async')">Day-to-Day Skills <span class="nav-tag tag-as">async</span></div>
+    <div class="nav-item" onclick="showPage('sales')">Sales Collateral <span class="nav-tag tag-as">async</span></div>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: PM OS
+════════════════════════════════════════════════ -->
+<div class="page active" id="page-os">
+<div class="page-inner">
+  <h1>Product Management OS</h1>
+  <p class="subtitle">Remove friction. Make better product decisions.</p>
+
+  <div class="flow-banner">
+    <span class="step">Input</span><span class="arrow">→</span>
+    <span class="step">Understanding</span><span class="arrow">→</span>
+    <span class="step">Decision</span><span class="arrow">→</span>
+    <span class="step">Communication</span><span class="arrow">→</span>
+    <span class="step">Execution</span><span class="arrow">→</span>
+    <span class="step">Learning</span>
+  </div>
+
+  <p>Each skill in this system strengthens one part of that flow.</p>
+
+  <h2>How does AI fit in?</h2>
+  <p>AI is not here to replace your thinking. It is here to structure inputs, accelerate analysis, reduce repetitive work, and surface risks and assumptions — so you can focus on <strong>judgment, tradeoffs, and direction.</strong></p>
+
+  <blockquote><p>Create a shared Claude Project for the team. Pin this doc, your product strategy, and your decision-making principles. Each PM gets instant access to every prompt from any conversation.</p></blockquote>
+
+  <h2>Workshop Sessions</h2>
+  <div class="session-grid">
+    <div class="session-card" onclick="showPage('s1')">
+      <div class="session-card-icon">🧩</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Session 1 — Foundation</div>
+        <div class="session-card-meta">In-person · 2 hours</div>
+        <div class="session-card-skills">Problem framing · Initiative naming · Prioritization · Breakdown</div>
+      </div>
+      <span class="nav-tag tag-ip">In-person</span>
+    </div>
+    <div class="session-card" onclick="showPage('s2')">
+      <div class="session-card-icon">🔎</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Session 2 — Landscape</div>
+        <div class="session-card-meta">In-person · 60 min</div>
+        <div class="session-card-skills">Competitive analysis · Strategy translation</div>
+      </div>
+      <span class="nav-tag tag-ip">In-person</span>
+    </div>
+    <div class="session-card" onclick="showPage('s3')">
+      <div class="session-card-icon">🎙</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Session 3 — Customers</div>
+        <div class="session-card-meta">In-person · 60 min</div>
+        <div class="session-card-skills">Customer conversations · Customer insight synthesis</div>
+      </div>
+      <span class="nav-tag tag-ip">In-person</span>
+    </div>
+    <div class="session-card" onclick="showPage('s4')">
+      <div class="session-card-icon">🧭</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Session 4 — Alignment</div>
+        <div class="session-card-meta">In-person · 60 min</div>
+        <div class="session-card-skills">Decision framing · Selling &amp; defending decisions</div>
+      </div>
+      <span class="nav-tag tag-ip">In-person</span>
+    </div>
+    <div class="session-card" onclick="showPage('za')">
+      <div class="session-card-icon">📖</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Zoom A — Communicate</div>
+        <div class="session-card-meta">Zoom pair · 30 min</div>
+        <div class="session-card-skills">Product storytelling · Product communication</div>
+      </div>
+      <span class="nav-tag tag-zm">Zoom</span>
+    </div>
+    <div class="session-card" onclick="showPage('zb')">
+      <div class="session-card-icon">⚠️</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Zoom B — Risk &amp; Success</div>
+        <div class="session-card-meta">Zoom pair · 30 min</div>
+        <div class="session-card-skills">Risk identification · Metrics &amp; success criteria</div>
+      </div>
+      <span class="nav-tag tag-zm">Zoom</span>
+    </div>
+    <div class="session-card" onclick="showPage('async')">
+      <div class="session-card-icon">⚡</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Day-to-Day Skills</div>
+        <div class="session-card-meta">Self-paced · Async</div>
+        <div class="session-card-skills">Time prioritization · Weekly narrative · Prototyping · Requirements · Release prep</div>
+      </div>
+      <span class="nav-tag tag-as">Async</span>
+    </div>
+    <div class="session-card" onclick="showPage('sales')">
+      <div class="session-card-icon">🗂</div>
+      <div class="session-card-body">
+        <div class="session-card-title">Sales Collateral</div>
+        <div class="session-card-meta">Self-paced · Templates</div>
+        <div class="session-card-skills">One-pager · Battlecard · Conversation guide · Launch briefing · Initiative one-pager</div>
+      </div>
+      <span class="nav-tag tag-as">Async</span>
+    </div>
+  </div>
+
+  <h2>All Skills &amp; Claude Prompts</h2>
+
+  <div class="skill-card">
+    <h3>🧩 Problem Framing</h3>
+    <p class="why">Customers, users, and field teams naturally describe problems in solution language — <em>"I need a button," "we need a faster process."</em> Problem framing is the discipline of excavating the real need from the surface request — producing a problem statement with zero solution language.</p>
+    <p><strong>The test:</strong> A clean problem statement contains no words that describe a solution, feature, technology, or approach. If you can read it and still have multiple ways to solve it — you have found the problem.</p>
+    <pre><code>Request or input I've received: [paste the raw request, ticket, or ask]
+
+Please:
+1. Identify all the solution language in this request
+2. Rewrite it as a pure problem statement — no solution language of any kind
+3. Tell me what we still don't know about the problem
+
+The output should describe a human need, not a product response.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ PMs and field teams work from shared problem statements, not competing solution proposals.</p>
+    <span class="skill-link" onclick="showPage('s1')">Session 1 — Foundation →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🏷 Initiative Naming</h3>
+    <p class="why">Weak names hide value and create misalignment. A well-named initiative is already partially sold. Naming works best when it starts from a clean problem statement — not the original request.</p>
+    <pre><code>Initiative I am working on: [describe what you are building or doing]
+
+Please generate 3 initiative names using the format: Who / What / Outcome
+For each name: state it, explain what it emphasises, explain what it de-emphasises.
+Then recommend which one you would use and why.
+
+Avoid jargon, internal codenames, and technology-first framing.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Initiatives become clear, sellable, and easy to align around.</p>
+    <span class="skill-link" onclick="showPage('s1')">Session 1 — Foundation →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>📊 Prioritization</h3>
+    <p class="why">PMs often make tradeoffs implicitly or inconsistently. This framework gives the team a shared language without over-engineering the decision.</p>
+    <p><strong>Dealbreaker first:</strong> Committed customer promise, exec mandate, or contractual obligation → goes to the top, no scoring needed.</p>
+    <p><strong>Everything else: Reach × Impact × Frequency</strong> (score each 4→1). Set product priority <em>before</em> asking engineering for sizing.</p>
+    <pre><code>Initiatives to prioritize: [list your initiatives]
+Context: [company stage, current priorities, constraints]
+
+Score each using:
+- Dealbreaker? (if yes, goes to the top)
+- Reach: all/most (4) · significant segment (3) · specific subset (2) · edge cases (1)
+- Impact: blocker (4) · hard workaround (3) · reasonable workaround (2) · nice to have (1)
+- Frequency: daily (4) · weekly (3) · monthly (2) · rare (1)
+
+Calculate Reach × Impact × Frequency. Then rank, flag assumptions,
+highlight anything misleading, and note what to stop or defer.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Explicit, consistent prioritization. Stakeholders understand the reasoning, not just the ranking.</p>
+    <span class="skill-link" onclick="showPage('s1')">Session 1 — Foundation →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🧱 Breakdown (Strategy → Execution)</h3>
+    <p class="why">Many bottlenecks come from initiatives that are under-scoped (too vague to start) or over-scoped (too big to ship).</p>
+    <pre><code>Initiative: [name and one-sentence description]
+Goal: [what outcome does this drive?]
+
+Break this down into: key components, epics, user stories for the first epic,
+dependencies, delivery risks, and recommended MVP scope.
+
+Flag anything that looks like scope creep.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Initiatives become executable faster. The first sprint can start without a two-week planning marathon.</p>
+    <span class="skill-link" onclick="showPage('s1')">Session 1 — Foundation →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🔎 Competitive Analysis</h3>
+    <p class="why">The real goal is understanding how competitors win, where they are vulnerable, and what that means for us — not a feature checklist.</p>
+    <pre><code>Competitor: [name] · Our product: [description] · Context: [what decision is this for?]
+
+Analyse: where they're stronger and why, where we're stronger and is it defensible,
+their likely positioning and target customer, where we're most vulnerable,
+and what opportunities this creates.
+
+Focus on strategic implications, not feature lists.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Sharper, strategy-relevant insights that connect directly to decisions.</p>
+    <span class="skill-link" onclick="showPage('s2')">Session 2 — Landscape →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🧭 Strategy Translation</h3>
+    <p class="why">Company strategy only creates impact when it connects to daily product decisions. Without this, teams drift and default to reactive work.</p>
+    <pre><code>Company/product strategy: [paste strategy or key pillars]
+Initiatives I'm considering: [list them]
+
+How does each support (or not) the strategy? What should we prioritise more or less?
+Where are we drifting? What's missing given our stated direction?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ PMs make decisions that compound toward strategy rather than scatter.</p>
+    <span class="skill-link" onclick="showPage('s2')">Session 2 — Landscape →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🎙 Customer Conversations</h3>
+    <p class="why">PMs often go into customer meetings underprepared, ask leading questions, or spend the call validating what they already believe.</p>
+    <pre><code>Customer context: [role, company, how long a customer, known pain points]
+What we want to learn: [question or hypothesis]
+Relevant products/features: [brief list]
+
+Give me: 5 open-ended questions, 3 hypotheses, signals to listen for,
+what to avoid asking, and one provocative question I'd normally skip.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Higher-quality conversations that uncover real problems rather than confirming roadmap items.</p>
+    <span class="skill-link" onclick="showPage('s3')">Session 3 — Customers →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🧠 Customer Insight Synthesis</h3>
+    <p class="why">Raw notes do not translate into insight without structured thinking. Most insights die in Notion.</p>
+    <pre><code>Customer call notes: [paste raw notes — messy is fine]
+Context: [product area, what were we exploring?]
+
+Extract: key insights (what it means, not what they said), patterns,
+real problems vs stated requests, surprises, and opportunities.
+
+Be specific. Don't restate — interpret.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ The path from conversation to product decision compresses from weeks to hours.</p>
+    <span class="skill-link" onclick="showPage('s3')">Session 3 — Customers →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🧭 Decision Framing</h3>
+    <p class="why">Decisions are often implicit, poorly scoped, or communicated without context. This creates alignment debt that compounds over time.</p>
+    <pre><code>Decision: [describe it] · Context: [background, constraints, timeline]
+
+Frame with: the core question, options including "do nothing", pros/cons,
+what we're optimising for (and explicitly not), recommendation + key assumption,
+and what would change the recommendation.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Stakeholders understand the tradeoffs rather than just the conclusion.</p>
+    <span class="skill-link" onclick="showPage('s4')">Session 4 — Alignment →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🛡 Selling &amp; Defending Decisions</h3>
+    <p class="why">Weak framing leads to endless debate. Strong framing creates alignment even under pushback.</p>
+    <pre><code>Decision: [what you decided] · Objections I expect: [list] · Stakeholders: [who, what they care about]
+
+Help me present: context, options considered and why ruled out, tradeoffs,
+recommendation stated with confidence, and how to handle each expected objection.
+
+Tone: clear and confident, not defensive.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ PMs drive alignment faster. Objections are handled proactively.</p>
+    <span class="skill-link" onclick="showPage('s4')">Session 4 — Alignment →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>📖 Product Storytelling</h3>
+    <p class="why">Facts do not persuade — narratives do. PMs need to connect problems, solutions, and impact into a story people understand and remember.</p>
+    <pre><code>Initiative: [name] · Problem: [customer/business problem] · What we're doing: [approach]
+Impact: [what changes, for whom, by how much] · Audience: [investors/leadership/team/customers]
+
+Turn this into a narrative: the problem and who feels it, why now,
+what we're doing in human terms, and what changes after we ship.
+
+Make it memorable. No bullet points in the output.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ PMs communicate with clarity and impact.</p>
+    <span class="skill-link" onclick="showPage('za')">Zoom A — Communicate →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>📣 Product Communication</h3>
+    <p class="why">PMs spend too much time rewriting the same information for different audiences.</p>
+    <pre><code>What I want to communicate: [paste your update or summary]
+Context: [what happened, what's shipping, what was decided?]
+
+Turn this into three versions:
+1. Executive summary (3–5 sentences)
+2. Customer-facing update (2–3 sentences, plain language)
+3. Internal Slack message (1–2 sentences + one next step)</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ One source of truth becomes three tailored messages without three rewrites.</p>
+    <span class="skill-link" onclick="showPage('za')">Zoom A — Communicate →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>⚠️ Risk Identification</h3>
+    <p class="why">Risks identified late are expensive. This makes risk identification a planning habit, not a reactive firefight.</p>
+    <pre><code>Initiative or decision: [describe what you're working on]
+
+Identify risks across: product (will customers use/want/be able to use it?),
+technical (can we build it?), and adoption/GTM (will it reach the right people?).
+
+Rate each: likelihood × impact. Highlight top 3. What are we most likely missing?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Earlier visibility. Teams address the right problems before they become blockers.</p>
+    <span class="skill-link" onclick="showPage('zb')">Zoom B — Risk &amp; Success →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>📈 Metrics &amp; Success Criteria</h3>
+    <p class="why">Without clear success metrics upfront, teams cannot tell if what they built worked.</p>
+    <pre><code>Initiative: [what you're building] · Goal: [business or user outcome]
+
+Define: leading indicators (measurable within weeks), lagging indicators
+(measurable within months), what quantitative success looks like,
+what would tell us to iterate or stop, and how to measure each in practice.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ Teams know what winning looks like before they start building.</p>
+    <span class="skill-link" onclick="showPage('zb')">Zoom B — Risk &amp; Success →</span>
+  </div>
+
+  <div class="skill-card">
+    <h3>🗂 Sales Collateral</h3>
+    <p class="why">PMs are best-placed to arm the field — they understand the product, positioning, and problems it solves. Without PM-authored collateral, sales teams improvise. With it, every customer conversation starts from the same accurate foundation.</p>
+    <p>Five templates across two levels: <strong>product-level</strong> assets maintained by PMs (one-pager, battlecard, conversation guide) and <strong>initiative-level</strong> assets created per launch (field briefing, initiative one-pager). Each includes a Claude prompt to draft or refresh it.</p>
+    <span class="skill-link" onclick="showPage('sales')">Sales Collateral Templates →</span>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SESSION 1
+════════════════════════════════════════════════ -->
+<div class="page" id="page-s1">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-inperson);color:var(--tag-inperson-ink);">● In-person · 2 hours</div>
+  <h1>Session 1 — Foundation</h1>
+  <p class="subtitle">Problem framing · Initiative naming · Prioritization · Breakdown</p>
+
+  <blockquote><p>Good product work starts before the first line of code — and before the first solution is proposed. This session builds the habit of getting from a solution-shaped request to the real underlying need, then turning that into an initiative that is clearly named, properly ranked, and scoped to ship.</p></blockquote>
+
+  <h2>Outcomes</h2>
+  <ul>
+    <li>Recognise solution language in requests from customers, field teams, and stakeholders</li>
+    <li>Excavate the real underlying need — producing a problem statement with zero solution language</li>
+    <li>Name initiatives in a way that communicates value, not just activity</li>
+    <li>Score and rank work using a shared framework — without over-engineering the decision</li>
+    <li>Scope an MVP that tests the core assumption without building everything</li>
+  </ul>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:10</td><td>Warm-up</td></tr>
+    <tr><td>0:10 – 0:35</td><td>Concept + Exercise 1: Problem framing</td></tr>
+    <tr><td>0:35 – 0:55</td><td>Concept + Exercise 2: Initiative naming</td></tr>
+    <tr><td>0:55 – 1:10</td><td>Break</td></tr>
+    <tr><td>1:10 – 1:35</td><td>Concept + Exercise 3: Prioritization</td></tr>
+    <tr><td>1:35 – 1:55</td><td>Exercise 4: Breakdown + MVP scoping</td></tr>
+    <tr><td>1:55 – 2:00</td><td>Wrap + commitment</td></tr>
+  </table>
+
+  <h2>Pre-Work</h2>
+  <ul>
+    <li>One real request, ticket, or ask that came to you recently — ideally one that arrived in solution language (<em>"we need X," "can you add Y"</em>)</li>
+    <li>A rough sense of 3–4 things currently on your backlog or roadmap</li>
+  </ul>
+
+  <h2>Warm-Up (10 min)</h2>
+  <blockquote><p>What is the most solution-shaped request you have received recently? What was the actual ask underneath it — and did you ever find out?</p></blockquote>
+  <p>Listen for: feature requests with no stated problem, customer asks that jump straight to implementation, internal escalations that describe a fix rather than a need.</p>
+
+  <hr>
+
+  <h2>Core Concept 1: Problem Framing</h2>
+  <p>People — customers, field teams, stakeholders — naturally describe problems in solution language. They tell you what they want, not why they want it.</p>
+  <p><em>"I want a button." "We need a faster process." "Can you add a filter?"</em></p>
+  <p>These are solution statements dressed up as problems. Until you strip the solution out, you cannot tell whether you are building the right thing, the wrong thing, or something that already exists.</p>
+  <p><strong>Problem framing is the discipline of excavating the real need from the surface request.</strong> It is not a software skill — it is a thinking skill. The method is the same for a software request, a process complaint, a customer escalation, or a management ask.</p>
+
+  <h3>The Excavation Move</h3>
+  <p>When you receive a solution-shaped request, ask: <strong>"What will that give you?"</strong> Keep asking until the answer no longer contains any solution language. That is the problem.</p>
+
+  <table>
+    <tr><th>Request</th><th>Ask</th><th>Dig deeper</th><th>Problem</th></tr>
+    <tr><td>"I want a dashboard"</td><td>What will a dashboard give you?</td><td>"I'll be able to see if things are working"</td><td>People have no way to know if things are working until something breaks</td></tr>
+    <tr><td>"We need a CSV export"</td><td>What will exporting give you?</td><td>"I can put it in our reporting tool"</td><td>Teams cannot get data into their existing reporting workflow without manual steps</td></tr>
+    <tr><td>"I want a faster horse"</td><td>What will a faster horse give you?</td><td>"I can cover more distance per day"</td><td>Travellers cannot cover long distances in a day under their own power</td></tr>
+  </table>
+
+  <h3>The Clean Problem Statement Test</h3>
+  <blockquote><p>Does this sentence contain any words that describe a solution, feature, technology, or approach? If yes — dig one level deeper. A clean problem statement should leave multiple possible solutions on the table.</p></blockquote>
+
+  <h2>Exercise 1 — Problem Framing (20 min)</h2>
+  <p><strong>Warm-up (5 min, whole group):</strong> Identify the solution language in each of these:</p>
+  <pre><code>- "Customers want export to CSV"
+- "We need a dashboard"
+- "Users are confused in onboarding"
+- "We need faster ingestion"
+- "Sales needs a button to resend the welcome email"</code></pre>
+  <p><strong>Main exercise (15 min):</strong> Use your real request from pre-work.</p>
+  <ol>
+    <li>Write the request exactly as it came to you — solution language and all</li>
+    <li>Ask "what will that give you?" at least twice. Stop when no solution language remains.</li>
+    <li>Run it through Claude:</li>
+  </ol>
+  <pre><code>Request or input I've received: [paste the raw request exactly as it came to you]
+
+Please:
+1. Identify all the solution language in this request
+2. Rewrite it as a pure problem statement — no solution language of any kind
+3. Tell me what we still don't know about the problem
+
+The output should describe a human need, not a product response to that need.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p>Compare your hand-excavated version with Claude's. Where do they differ? What solution language did you miss?</p>
+
+  <hr>
+
+  <h2>Core Concept 2: Initiative Naming</h2>
+  <p>The name of an initiative is the first piece of communication. Naming only works if you have a clean problem statement to name from. This is why problem framing comes first — the output of Exercise 1 is the input to Exercise 2.</p>
+  <p><strong>Format: Who / What / Outcome</strong></p>
+  <table>
+    <tr><th>Part</th><th>Question it answers</th></tr>
+    <tr><td>Who</td><td>Who is this for?</td></tr>
+    <tr><td>What</td><td>What are we changing or enabling?</td></tr>
+    <tr><td>Outcome</td><td>What improves as a result?</td></tr>
+  </table>
+
+  <h2>Exercise 2 — Initiative Naming (10 min)</h2>
+  <p><strong>Use the clean problem statement from Exercise 1 — not the original request.</strong></p>
+  <pre><code>Problem statement (no solution language): [paste your output from Exercise 1]
+
+Please generate 3 initiative names using the format: Who / What / Outcome
+For each name: state it, explain what it emphasises, explain what it de-emphasises.
+Then recommend which one you would use and why.
+
+Avoid jargon, internal codenames, and technology-first framing.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Core Concept 3: Prioritization</h2>
+  <p><strong>Step 1 — Check for a dealbreaker.</strong> Committed customer promise, exec mandate, or contractual obligation? It goes to the top. Dealbreakers bypass the framework.</p>
+  <p><strong>Step 2 — Score everything else on three dimensions (pick one option per row, no half-scores):</strong></p>
+  <table>
+    <tr><th>Dimension</th><th>4</th><th>3</th><th>2</th><th>1</th></tr>
+    <tr><td><strong>Reach</strong></td><td>All/most customers</td><td>Significant segment</td><td>Specific subset</td><td>Edge cases</td></tr>
+    <tr><td><strong>Impact</strong></td><td>Blocker</td><td>Hard workaround</td><td>Reasonable workaround</td><td>Nice to have</td></tr>
+    <tr><td><strong>Frequency</strong></td><td>Daily</td><td>Weekly</td><td>Monthly</td><td>Rare</td></tr>
+  </table>
+  <p><strong>Score = Reach × Impact × Frequency</strong> (range: 1–64)</p>
+  <p><strong>Step 3 — Set product priority before sizing.</strong> Have a conviction about what matters before asking engineering how long it takes.</p>
+  <p><strong>Engineering sizing (order of magnitude only):</strong> ~2 days · ~2 weeks · ~2 months</p>
+
+  <h2>Exercise 3 — Prioritization (20 min)</h2>
+  <p>Score 3–4 real items from your backlog, then run them through Claude:</p>
+  <pre><code>Initiatives to prioritize: [list your initiatives]
+Context: [company stage, current priorities, constraints]
+
+For each initiative:
+- Dealbreaker? (customer commitment / exec mandate / contractual)
+- Reach: all/most (4) · significant segment (3) · specific subset (2) · edge cases (1)
+- Impact: blocker (4) · hard workaround (3) · reasonable workaround (2) · nice to have (1)
+- Frequency: daily (4) · weekly (3) · monthly (2) · rare (1)
+
+Multiply: Reach × Impact × Frequency = product priority score
+
+Then rank, flag the key assumption behind each impact score,
+highlight anything where the score feels misleading, and note what to stop or defer.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Core Concept 4: Breakdown + MVP Scoping</h2>
+  <p>The MVP question is not <em>"what is the minimum version?"</em> — it is <em>"what is the smallest version that tests our core assumption?"</em></p>
+
+  <h2>Exercise 4 — Breakdown + MVP Scoping (20 min)</h2>
+  <p><strong>Use your top-ranked initiative from Exercise 3.</strong></p>
+  <pre><code>Initiative: [name and one-sentence description]
+Goal: [what outcome does this drive?]
+
+Break this down into:
+1. Key components or workstreams
+2. Epics (2–5 sentence descriptions of major deliverables)
+3. User stories for the first epic (as a... I want... so that...)
+4. Dependencies — what must be true before each component can start?
+5. Delivery risks
+6. Recommended MVP scope — smallest version that tests the core assumption
+
+Flag anything that looks like scope creep.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Key Insight</h2>
+  <blockquote><p>Solution language is everywhere. Learning to hear it is the first skill. A clean problem statement leaves multiple solutions on the table. Named initiatives get aligned faster. Scored work stops the loudest voice winning. Scoped MVPs ship.</p></blockquote>
+
+  <h2>Wrap</h2>
+  <p>Each participant commits out loud: <em>"This week I will use [one skill] on [one specific piece of work]."</em></p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SESSION 2
+════════════════════════════════════════════════ -->
+<div class="page" id="page-s2">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-inperson);color:var(--tag-inperson-ink);">● In-person · 60 min</div>
+  <h1>Session 2 — Landscape</h1>
+  <p class="subtitle">Competitive analysis · Strategy translation</p>
+
+  <blockquote><p>Strong product strategy comes from understanding not just what competitors build — but how they think and where they are going. And from connecting that understanding to the decisions you make every week.</p></blockquote>
+
+  <h2>Outcomes</h2>
+  <ul>
+    <li>Move beyond feature comparison to strategic competitive understanding</li>
+    <li>Identify where you are strong, where you are vulnerable, and what to do about it</li>
+    <li>Connect competitive and market signals directly to roadmap decisions</li>
+    <li>Use strategy translation to align daily decisions with company direction</li>
+  </ul>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:10</td><td>Warm-up</td></tr>
+    <tr><td>0:10 – 0:25</td><td>Concept: Competitive analysis</td></tr>
+    <tr><td>0:25 – 0:40</td><td>Exercise 1: From signals to insight</td></tr>
+    <tr><td>0:40 – 0:50</td><td>Concept + Exercise 2: Strategy translation</td></tr>
+    <tr><td>0:50 – 1:00</td><td>Debrief</td></tr>
+  </table>
+
+  <h2>Pre-Work</h2>
+  <ul>
+    <li>1–2 key competitors relevant to your product area</li>
+    <li>Basic familiarity with what they do and where they come up in deals</li>
+    <li>Optional: examples of recent wins/losses involving that competitor</li>
+  </ul>
+
+  <h2>Warm-Up (10 min)</h2>
+  <blockquote><p>When did a competitor last change something you were planning to do — or something you thought was safe? What did you learn from it?</p></blockquote>
+
+  <hr>
+
+  <h2>Core Concept: Competitive Analysis</h2>
+  <p>Competitive analysis is <strong>not</strong> a feature checklist, a list of "they're better/worse," or a static document. It is a way to understand how competitors win, where they are vulnerable, and what that means for us.</p>
+
+  <table>
+    <tr><th>Instead of</th><th>Think</th></tr>
+    <tr><td>"They have better dashboards"</td><td>"They win with business users due to strong reporting — which makes us weaker in executive visibility, but stronger in technical depth"</td></tr>
+  </table>
+
+  <p><strong>In AI products, your competition is not only other vendors</strong> — it is also the customer's ability to build a solution themselves. Ask: could a customer replicate this with off-the-shelf AI tools? Where would a self-built solution fall short?</p>
+
+  <p><strong>Practical tip:</strong> Each PM owns 1–2 competitors. Maintains a living view, not a static document.</p>
+
+  <h2>Exercise 1 — From Signals to Insight (30 min)</h2>
+  <pre><code>Competitor: [name] · Our product: [description] · Context: [what decision is this for?]
+
+Analyse:
+1. Where are they stronger than us, and why?
+2. Where are we stronger, and is that defensible?
+3. Their likely strategic positioning and target customer
+4. Where are we most vulnerable?
+5. What opportunities does this create for us?
+
+Focus on strategic implications, not feature lists.
+
+Upgrade: What assumptions are we making that might be wrong?
+What would need to be true for them to become a major threat?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Core Concept: Strategy Translation</h2>
+  <p>Most PMs can recite the company strategy. Fewer can explain how today's prioritization decision connects to it. Without active translation, teams drift — defaulting to whatever is loudest.</p>
+  <p>Before any significant decision, ask: which part of our strategy does this serve? If this initiative does not exist, does anything in our strategy break?</p>
+
+  <h2>Exercise 2 — Strategy Translation (10 min)</h2>
+  <pre><code>Company/product strategy: [paste strategy statement or key pillars]
+Initiatives I'm considering: [list them]
+
+How does each initiative support (or not) the strategy?
+What should we prioritise more or less?
+Where are we drifting without realising it?
+What's conspicuously missing given our stated direction?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Debrief question:</strong> What would we stop doing if we took our strategy literally?</p>
+
+  <hr>
+
+  <h2>Key Insights</h2>
+  <blockquote><p>Competitive analysis is only valuable if it changes what we do. Signals are easy to collect — insight comes from connecting them. Strategy translation is not a quarterly exercise — it is a decision-making habit.</p></blockquote>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SESSION 3
+════════════════════════════════════════════════ -->
+<div class="page" id="page-s3">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-inperson);color:var(--tag-inperson-ink);">● In-person · 60 min</div>
+  <h1>Session 3 — Customers</h1>
+  <p class="subtitle">Customer conversations · Customer insight synthesis</p>
+
+  <blockquote><p>The shortest path from customer conversation to product decision is the one most PMs skip. This session compresses the research loop — from how to enter a conversation to how to extract a sharp insight that drives a decision.</p></blockquote>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:10</td><td>Warm-up</td></tr>
+    <tr><td>0:10 – 0:25</td><td>Concept + Exercise 1: Conversation prep</td></tr>
+    <tr><td>0:25 – 0:40</td><td>Concept + Exercise 2: Insight synthesis</td></tr>
+    <tr><td>0:40 – 0:55</td><td>Group debrief</td></tr>
+    <tr><td>0:55 – 1:00</td><td>Wrap</td></tr>
+  </table>
+
+  <h2>Warm-Up (10 min)</h2>
+  <blockquote><p>Share a time you left a customer call without a clear insight. What happened next? What did you do with the notes?</p></blockquote>
+
+  <hr>
+
+  <h2>Core Concept: Customer Conversations</h2>
+  <p><strong>Failure mode 1 — The feature review:</strong> The PM walks through the roadmap asking "does this seem useful?" The customer says yes to everything. Nothing is learned.</p>
+  <p><strong>Failure mode 2 — The leading question:</strong> "Would it help if we made the export faster?" The customer says yes. The PM hears validation. The real problem was never surfaced.</p>
+  <p><strong>The most useful question you probably don't ask:</strong> <em>"Walk me through the last time you tried to do [thing] and it didn't go the way you expected."</em> This gets a story. Stories contain the problems direct questions never surface.</p>
+
+  <h2>Exercise 1 — Conversation Prep (15 min)</h2>
+  <pre><code>Customer context: [role, company, how long a customer, known pain points]
+What we want to learn: [question or hypothesis]
+Relevant products/features: [brief list]
+
+Give me:
+1. Five open-ended questions that surface real problems (not validate assumptions)
+2. Three hypotheses I have going in
+3. Signals to listen for — what would confirm or challenge each hypothesis?
+4. What to avoid asking
+5. One provocative question I'd normally skip</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Core Concept: Customer Insight Synthesis</h2>
+  <p>Synthesis is not summarising what the customer said. It is answering: <strong>what does this mean for what we build?</strong></p>
+  <table>
+    <tr><th>Raw note</th><th>Synthesised insight</th></tr>
+    <tr><td>"She exports to Excel every Friday"</td><td>Operations users maintain a manual weekly reporting workflow because our data can't be consumed directly by their BI tools — a recurring time cost, not a one-off request</td></tr>
+    <tr><td>"He said onboarding took longer than expected"</td><td>New customers hit an undisclosed complexity gap between the sales demo and production setup — likely causing early churn risk</td></tr>
+  </table>
+  <p><strong>Customers are good at describing pain. They are not always good at diagnosing cause.</strong> <em>"We need a dashboard"</em> is a request. <em>"We cannot tell if the system is working until something breaks"</em> is the problem.</p>
+
+  <h2>Exercise 2 — Insight Synthesis (15 min)</h2>
+  <p>Use notes from a past customer conversation.</p>
+  <pre><code>Customer call notes: [paste raw notes — messy is fine]
+Context: [product area, what were we exploring?]
+
+Extract:
+1. Key insights — what did we learn? (what it means, not what they said)
+2. Patterns — themes across multiple things they said
+3. Real problems vs stated requests
+4. Surprises — what challenged our assumptions?
+5. Opportunities — what should we explore or build?
+
+Be specific. Don't restate — interpret.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Key Insights</h2>
+  <blockquote><p>The best customer questions are the ones that surface problems you weren't expecting to hear. Synthesis is not summarising — it's extracting meaning. AI structures the analysis. Product judgment decides what to do with it.</p></blockquote>
+
+  <h2>Wrap</h2>
+  <p><em>"Before my next customer conversation, I will spend [X minutes] preparing with Claude. After the call, I will run the synthesis prompt within [X hours]."</em></p>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SESSION 4
+════════════════════════════════════════════════ -->
+<div class="page" id="page-s4">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-inperson);color:var(--tag-inperson-ink);">● In-person · 60 min</div>
+  <h1>Session 4 — Alignment</h1>
+  <p class="subtitle">Decision framing · Selling &amp; defending decisions</p>
+
+  <blockquote><p>Making a good decision is half the job. Getting it aligned is the other half. This session covers both: how to frame a decision so it is clear and defensible, and how to present it so stakeholders understand the reasoning rather than just the conclusion.</p></blockquote>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:10</td><td>Warm-up</td></tr>
+    <tr><td>0:10 – 0:25</td><td>Concept + Exercise 1: Decision framing</td></tr>
+    <tr><td>0:25 – 0:45</td><td>Concept + Exercise 2: Selling and defending</td></tr>
+    <tr><td>0:45 – 0:55</td><td>Group debrief</td></tr>
+    <tr><td>0:55 – 1:00</td><td>Wrap</td></tr>
+  </table>
+
+  <h2>Warm-Up (10 min)</h2>
+  <blockquote><p>Share a decision that was right but didn't land well. What made it hard to sell? What would you do differently?</p></blockquote>
+
+  <hr>
+
+  <h2>Core Concept: Decision Framing</h2>
+  <p>Most product decisions are communicated as conclusions: <em>"We decided to do X."</em> This skips the reasoning — which means stakeholders can't evaluate whether it makes sense, can't flag missing information, and can't tell what would change the outcome.</p>
+  <p><strong>The "optimising for" step is the most skipped.</strong> Two people can agree on the facts and disagree on the decision because they're optimising for different things — speed vs quality, growth vs retention. Making the optimisation criteria explicit converts a values debate into a tradeoffs conversation.</p>
+
+  <h2>Exercise 1 — Decision Framing (15 min)</h2>
+  <pre><code>Decision I need to make: [describe it]
+Context: [relevant background, constraints, timeline]
+
+Frame with:
+1. The core question we're actually deciding
+2. Options on the table (including "do nothing")
+3. Pros and cons of each option
+4. What we're optimising for (and explicitly not optimising for)
+5. Recommendation and the key assumption it rests on
+6. What would change the recommendation</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+
+  <hr>
+
+  <h2>Core Concept: Selling &amp; Defending Decisions</h2>
+  <p>The goal is <strong>explanation</strong>, not defence. When you explain well, most reasonable pushback either reveals missing information you should incorporate, or reveals a values disagreement that can be named and resolved.</p>
+  <p><strong>Three types of objections:</strong></p>
+  <ul>
+    <li><strong>"I have information you don't"</strong> → take it seriously, update if warranted</li>
+    <li><strong>"I'm optimising for something different"</strong> → name the difference, have the values conversation</li>
+    <li><strong>"I don't trust the process"</strong> → the issue is the relationship, not the decision — address separately</li>
+  </ul>
+
+  <h2>Exercise 2 — Selling &amp; Defending (20 min)</h2>
+  <p><strong>Part A — Prepare (10 min):</strong></p>
+  <pre><code>Decision I need to align on: [what you decided]
+Key objections I expect: [list]
+Stakeholders: [who they are and what they care about]
+
+Help me present:
+1. Context — why this decision exists
+2. Options considered and why ruled out
+3. Tradeoffs in our chosen approach
+4. Recommendation, stated with confidence
+5. How to handle each expected objection — direct, non-defensive
+
+Tone: clear and confident, not defensive.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Part B — Role play (10 min):</strong> In pairs, one person presents, one raises objections. Switch. The second person should raise an objection you didn't prepare for.</p>
+
+  <hr>
+
+  <h2>Key Insights</h2>
+  <blockquote><p>Clear decisions improve alignment. The "optimising for" question is where most alignment failures happen — name it early. Objections are information. Know which type you're facing before you respond.</p></blockquote>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ZOOM A
+════════════════════════════════════════════════ -->
+<div class="page" id="page-za">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-zoom);color:var(--tag-zoom-ink);">● Zoom pair · 30 min</div>
+  <h1>Zoom A — Communicate</h1>
+  <p class="subtitle">Product storytelling · Product communication</p>
+
+  <blockquote><p>The best product thinking fails if it can't be communicated clearly. This session turns what you know into something others can understand, remember, and act on.</p></blockquote>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:05</td><td>Setup — each person picks a real initiative</td></tr>
+    <tr><td>0:05 – 0:15</td><td>Exercise 1: Product storytelling</td></tr>
+    <tr><td>0:15 – 0:25</td><td>Exercise 2: One story, three audiences</td></tr>
+    <tr><td>0:25 – 0:30</td><td>Shareback + wrap</td></tr>
+  </table>
+
+  <h2>Pre-Work</h2>
+  <p>Bring one initiative you're currently working on — something you've had to explain to at least one stakeholder in the last few weeks.</p>
+
+  <hr>
+
+  <h2>Exercise 1 — Product Storytelling (10 min)</h2>
+  <pre><code>Initiative: [name and description]
+Problem it solves: [customer or business problem]
+What we're doing: [approach or solution]
+Expected impact: [what changes, for whom, by how much]
+Audience: [investors / leadership / team / customers]
+
+Turn this into a compelling narrative:
+1. The problem — why it matters and who feels it
+2. Why now
+3. What we're doing — in human terms, not feature terms
+4. What changes after we ship
+
+Make it memorable. No bullet points in the output.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Review together:</strong> Does the narrative make someone care before it makes them understand? Does it start with the problem or the solution?</p>
+
+  <hr>
+
+  <h2>Exercise 2 — One Story, Three Audiences (10 min)</h2>
+  <pre><code>What I want to communicate: [paste the narrative from Exercise 1]
+Context: [what just happened / what's shipping / what was decided?]
+
+Turn this into three versions:
+1. Executive summary (3–5 sentences): what happened, why it matters, what comes next
+2. Customer-facing update (2–3 sentences): plain language, no jargon
+3. Internal Slack message (1–2 sentences + one next step)</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Compare outputs:</strong> Which version was hardest to compress? What did you cut — and was it actually necessary?</p>
+
+  <hr>
+
+  <h2>Key Insight</h2>
+  <blockquote><p>Facts don't persuade — narratives do. One source of truth becomes three tailored messages without three rewrites.</p></blockquote>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ZOOM B
+════════════════════════════════════════════════ -->
+<div class="page" id="page-zb">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-zoom);color:var(--tag-zoom-ink);">● Zoom pair · 30 min</div>
+  <h1>Zoom B — Risk &amp; Success</h1>
+  <p class="subtitle">Risk identification · Metrics &amp; success criteria</p>
+
+  <blockquote><p>The two questions most PMs skip at the start of an initiative: what could go wrong, and how will we know if it worked? This session builds the habit of answering both before you start building.</p></blockquote>
+
+  <h2>Session Structure</h2>
+  <table>
+    <tr><th>Time</th><th>Activity</th></tr>
+    <tr><td>0:00 – 0:05</td><td>Setup — each person picks a real initiative</td></tr>
+    <tr><td>0:05 – 0:15</td><td>Exercise 1: Risk identification</td></tr>
+    <tr><td>0:15 – 0:25</td><td>Exercise 2: Metrics and success criteria</td></tr>
+    <tr><td>0:25 – 0:30</td><td>Shareback + wrap</td></tr>
+  </table>
+
+  <h2>Pre-Work</h2>
+  <p>Bring one initiative in planning or early execution — something where you haven't yet explicitly defined risks or success metrics.</p>
+
+  <hr>
+
+  <h2>Exercise 1 — Risk Identification (10 min)</h2>
+  <pre><code>Initiative or decision: [describe what you're working on]
+
+Identify risks across three dimensions:
+1. Product risks — will customers use it, want it, be able to use it?
+2. Technical risks — can we build it, at what cost, with what dependencies?
+3. Adoption and GTM risks — will it reach the right people and get used?
+
+Rate each: likelihood (low/med/high) × impact (low/med/high)
+Highlight the top 3 risks to address before proceeding.
+What are we most likely missing?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Review together:</strong> Which risks were on your radar? Which surprised you? What would you do differently?</p>
+
+  <hr>
+
+  <h2>Exercise 2 — Metrics &amp; Success Criteria (10 min)</h2>
+  <pre><code>Initiative: [what you're building]
+Goal: [business or user outcome]
+
+Define:
+1. Leading indicators — early signals we're on track (measurable within weeks)
+2. Lagging indicators — outcomes we care about (measurable within months)
+3. What quantitative success looks like — be specific
+4. What would tell us to iterate or stop
+5. How we'd measure each in practice</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  <p><strong>Review together:</strong> Are your leading indicators early enough to act on? Do your success metrics connect to a decision?</p>
+
+  <hr>
+
+  <h2>Key Insights</h2>
+  <blockquote><p>Risks identified late are expensive. A success metric that doesn't connect to a decision is just a number — define what you'll do with it before you measure it.</p></blockquote>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: ASYNC
+════════════════════════════════════════════════ -->
+<div class="page" id="page-async">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-async);color:var(--tag-async-ink);">● Self-paced · Use mid-week on real work</div>
+  <h1>Day-to-Day Skills</h1>
+  <p class="subtitle">Save this page. Reach for these prompts when you need them.</p>
+
+  <div class="skill-card">
+    <h3>⏳ Time Prioritization</h3>
+    <p class="why"><strong>When to use it:</strong> Your week is full and you're not sure you're working on the right things.</p>
+    <pre><code>My tasks and meetings this week: [paste your list]
+
+1. Classify each item: urgent + important / important not urgent / urgent not important / neither
+2. What should I NOT do this week — and why?
+3. What should I delegate or delay, and to whom or when?
+4. If I could only do three things this week that create real impact, what are they?
+
+Be direct. My goal is to protect time for high-leverage work.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <p class="outcome">→ The week ends with something shipped or decided — not just attended.</p>
+  </div>
+
+  <div class="skill-card">
+    <h3>🗞 Weekly Product Narrative</h3>
+    <p class="why"><strong>When to use it:</strong> You need to send a weekly update. Takes ten minutes and replaces a 30-minute status meeting.</p>
+    <pre><code>This week:
+- What moved forward: [list]
+- What is stuck or blocked: [list]
+- Key decisions made: [list]
+- What I'm concerned about: [list]
+- Audience: [team / leadership / stakeholders]
+
+Write a weekly product narrative that:
+1. Leads with what matters most (not chronology)
+2. Is honest about what's stuck and why
+3. Flags the one thing that needs attention or a decision
+4. Ends with what we're focused on next week
+
+Under 200 words. No jargon.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>🧪 Prototyping (Thinking Through Building)</h3>
+    <p class="why"><strong>When to use it:</strong> Before writing requirements or briefing design — when you have an idea but haven't mapped the flow.</p>
+    <pre><code>Idea or feature: [describe what you want to build]
+User: [who is this for?]
+Job to be done: [what are they trying to accomplish?]
+
+Before we build anything:
+1. Walk through the user flow step by step
+2. What are the edge cases?
+3. What could break or frustrate users?
+4. What's the simplest version to test the core assumption?
+5. What assumption are we most at risk of getting wrong?</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>📝 Requirements Writing</h3>
+    <p class="why"><strong>When to use it:</strong> Before handing a ticket to engineering — to reduce back-and-forth.</p>
+    <pre><code>Requirement or user story: [paste your current wording]
+Context: [what is this part of? what does engineering need to know?]
+
+Rewrite this to be:
+1. Clear — one unambiguous reading only
+2. Testable — you could write an acceptance test from it
+3. Appropriately scoped — not too broad, not too narrow
+4. Free of implementation detail — describes what, not how
+
+Then flag missing edge cases or acceptance criteria.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>🚀 Release Preparation</h3>
+    <p class="why"><strong>When to use it:</strong> Before any release that touches customers or requires cross-team communication.</p>
+    <pre><code>What is shipping: [list tickets, features, or fixes]
+Audience: [internal team / customers / sales / leadership]
+
+Prepare:
+1. Release notes — customer language, benefit-first, no ticket numbers
+2. Internal summary — what the team needs to know
+3. Top 3 post-launch risks and how we're monitoring them
+4. Potential customer confusion — what might they misunderstand?
+5. Sales enablement points — 2–3 things sales should know</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE: SALES COLLATERAL
+════════════════════════════════════════════════ -->
+<div class="page" id="page-sales">
+<div class="page-inner">
+  <div class="format-badge" style="background:var(--tag-async);color:var(--tag-async-ink);">● Self-paced · Templates to fill in</div>
+  <h1>Sales Collateral</h1>
+  <p class="subtitle">Product-level assets maintained by PMs · Initiative-level assets created per launch</p>
+
+  <blockquote><p>PMs are best-placed to arm the field — they understand the product, the positioning, and the problems it solves. Without PM-authored collateral, sales and field teams improvise, overclaim, or undersell. With it, every customer conversation starts from the same accurate foundation.</p></blockquote>
+
+  <table>
+    <tr><th>Asset</th><th>Level</th><th>Use</th></tr>
+    <tr><td>Product one-pager</td><td>Product</td><td>Early-stage conversations, leave-behind</td></tr>
+    <tr><td>Competitive battlecard</td><td>Product</td><td>When a specific competitor comes up in a deal</td></tr>
+    <tr><td>Conversation guide</td><td>Product</td><td>Discovery questions, objection responses, what to avoid</td></tr>
+    <tr><td>Launch briefing</td><td>Initiative</td><td>Field enablement at the point of release</td></tr>
+    <tr><td>Initiative one-pager</td><td>Initiative</td><td>External-facing summary for prospects and customers</td></tr>
+  </table>
+
+  <h2>Product-Level Assets</h2>
+  <p>These are living documents. A PM owns each one and keeps it current. Update trigger: positioning shift, major new capability, ICP change.</p>
+
+  <div class="skill-card">
+    <h3>1. Product One-Pager</h3>
+    <p class="why">A single page that explains what the product does, who it is for, and why it wins. Used in early-stage conversations and as a leave-behind.</p>
+    <pre><code>Product: [name and one-sentence description]
+Target customer: [role, company type, size]
+Core problem we solve: [in customer language, no solution words]
+Main capabilities: [list]
+Key differentiators: [what makes us hard to replace]
+Customer proof points: [outcomes, metrics, quotes]
+
+Draft a product one-pager with:
+1. A plain-language problem statement (no solution language)
+2. What the product does, from the customer's perspective
+3. A who-it's-for table (role / what they care about / what they get)
+4. Three durable reasons we win
+5. One or two specific proof points
+
+One page. No jargon. No feature lists.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>2. Competitive Battlecard</h3>
+    <p class="why">A quick-reference card for the field when a specific competitor comes up. One card per competitor. Be honest — the field needs accurate information, not cheerleading.</p>
+    <pre><code>Competitor: [name] · Our product: [brief description]
+Context: [what deals do they show up in? what stage?]
+
+Draft a competitive battlecard with:
+1. How they position (1–2 sentences)
+2. Where they genuinely win (be honest)
+3. Where we win (be specific)
+4. A table of their likely objections about us — with direct, confident responses
+5. A table of our strongest claims against them — with supporting evidence
+6. One memorable sentence capturing why we beat them
+
+Do not make us sound better than we are.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>3. Conversation Guide</h3>
+    <p class="why">A reference for the field covering common questions, objections, and conversations. Not a script — a thinking tool.</p>
+    <pre><code>Product: [name and description]
+Common situations the field encounters: [list]
+Objections that come up repeatedly: [list]
+Discovery questions that have worked: [list if known]
+Things to avoid saying: [list if known]
+
+Draft a conversation guide with:
+1. One opening question that surfaces the real problem
+2. A table of common situations — what they mean, how to respond
+3. Five discovery questions that surface the problems we solve
+4. Q&A for the most common questions
+5. Two or three things to avoid saying and why
+
+Reference tool, not a script. Practical and direct.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <h2>Initiative-Level Assets</h2>
+  <p>Create these per launch. They sit on top of the product-level assets and explain what is new.</p>
+
+  <div class="skill-card">
+    <h3>4. Launch Briefing (for the field)</h3>
+    <p class="why">What the field needs to know when something new ships. Focused on the conversation it enables, not the feature itself. Readable in two minutes.</p>
+    <pre><code>Initiative: [name and one-sentence description]
+What is shipping: [list the capabilities or changes]
+Who benefits most: [customer segments, roles]
+Problem it solves: [customer language — no solution words]
+What customers might ask: [anticipated questions]
+What not to overclaim: [known limitations or caveats]
+
+Draft a field briefing with:
+1. What changed — plain language, customer's perspective
+2. Who to talk to and why
+3. A suggested conversation opener
+4. Q&A for likely questions
+5. One or two things not to say or overclaim
+
+One page. Readable in two minutes.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+  <div class="skill-card">
+    <h3>5. Initiative One-Pager (external)</h3>
+    <p class="why">A short external-facing summary of a new capability. Used in follow-up emails, proposals, and customer conversations.</p>
+    <pre><code>Initiative: [name]
+Problem it solves: [customer language, no solution words]
+What we built: [plain language description]
+Who benefits: [role, team, segment]
+Concrete outcome: [what changes — be specific]
+Proof point if available: [metric, customer story]
+Next step for the customer: [what should they do?]
+
+Draft an external one-pager with:
+1. The problem (customer language, no solution words)
+2. What we built (plain language, customer's perspective)
+3. What changes for them (specific and concrete)
+4. Who it is for
+5. How to get started
+
+No jargon. Readable in under a minute.</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+  </div>
+
+</div>
+</div>
+
+</main>
+</div>
+
+<script>
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const items = document.querySelectorAll('.nav-item');
+  const map = { os:0, s1:1, s2:2, s3:3, s4:4, za:5, zb:6, async:7, sales:8 };
+  if (map[id] !== undefined) items[map[id]].classList.add('active');
+  window.scrollTo(0, 0);
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+  }
+}
+
+function toggleNav() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function copyCode(btn) {
+  const code = btn.parentElement.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  });
+}
+
+document.addEventListener('click', function(e) {
+  const nav = document.getElementById('sidebar');
+  const hamburger = document.querySelector('.hamburger');
+  if (window.innerWidth <= 768 && nav.classList.contains('open') &&
+      !nav.contains(e.target) && !hamburger.contains(e.target)) {
+    nav.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>
